@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Feedback History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #020617, #031027);
+      color: #e5e7eb;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Layout */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* Logo top-left */
+    .logo {
+      width: 120px;
+      animation: floatGlow 4s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    @keyframes floatGlow {
+      0%   { transform: translateY(0);   filter: drop-shadow(0 0 0px #00aaff); }
+      50%  { transform: translateY(-4px); filter: drop-shadow(0 0 10px #00aaff); }
+      100% { transform: translateY(0);   filter: drop-shadow(0 0 0px #00aaff); }
+    }
+
+    .title-block {
+      flex: 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      color: #ffffff;
+      animation: fadeIn 1s ease-out;
+    }
+
+    p.subtitle {
+      margin: 4px 0 0 0;
+      color: #8da7c9;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Stats Cards */
+    .stats {
+      max-width: 1050px;
+      margin: 20px auto 10px auto;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-card {
+      background: rgba(5, 44, 101, 0.4);
+      border-radius: 12px;
+      padding: 15px 24px;
+      min-width: 180px;
+      border: 1px solid #0a3b7a;
+      box-shadow: 0 0 15px rgba(0, 140, 255, 0.2);
+      animation: fadeUp 0.8s ease-out;
+      text-align: center;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #7da9ff;
+      letter-spacing: 0.07em;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 6px;
+    }
+
+    /* Controls */
+    .controls {
+      max-width: 1050px;
+      margin: 10px auto 15px auto;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    input, select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #031027;
+      border: 1px solid #0a3b7a;
+      color: #dce6ff;
+      font-size: 15px;
+      transition: .2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #2ec4ff;
+      box-shadow: 0 0 10px #009dff;
+      outline: none;
+    }
+
+    /* Table */
+    .table-wrapper {
+      max-width: 1050px;
+      margin: 0 auto;
+      background: rgba(3, 16, 39, 0.7);
+      border-radius: 12px;
+      padding: 16px 20px;
+      border: 1px solid #0a3b7a;
+      box-shadow: 0 0 20px rgba(0, 140, 255, 0.25);
+      animation: fadeUp 1s ease-out;
+    }
+
+    table {
+      width: 100%;
+      font-size: 15px;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #031027;
+      color: #8da7c9;
+      position: sticky;
+      top: 0;
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #0a3b7a;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #082245;
+    }
+
+    tr:hover td {
+      background: rgba(0, 102, 255, 0.1);
+      transition: 0.15s;
+    }
+
+    .username {
+      font-weight: 600;
+      color: #2ec4ff;
+    }
+
+    .rating {
+      white-space: nowrap;
+    }
+
+    .stars { color: #2ec4ff; }
+    .empty-stars { color: #0e2a47; }
+
+    .timestamp { color: #8da7c9; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Logo top-left -->
+  <div class="top-bar">
+    <img src="logo.png" class="logo" alt="Logo" onclick="location.href='/'">
+    <div class="title-block">
+      <h1>Feedback History</h1>
+      <p class="subtitle">All feedback submitted via the Deluxe Shop Discord bot.</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Feedback</div>
+      <div class="stat-value" id="statCount">0</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-label">Average Rating</div>
+      <div class="stat-value" id="statAverage">0.0 / 5</div>
+    </div>
+  </div>
+
+  <!-- Search / Sort -->
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search username, ID or comment...">
+    <select id="sortSelect">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="highest">Highest Rating</option>
+    </select>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Rating</th>
+          <th>Comment</th>
+          <th>Submitted At</th>
+        </tr>
+      </thead>
+      <tbody id="feedbackBody"></tbody>
+    </table>
+  </div>
+
+<script>
+  let fullData = [];
+  const tbody = document.getElementById("feedbackBody");
+  const statCount = document.getElementById("statCount");
+  const statAverage = document.getElementById("statAverage");
+
+  const searchInput = document.getElementById("searchInput");
+  const sortSelect = document.getElementById("sortSelect");
+
+  function createStars(r) {
+    r = Number(r) || 0;
+    return `<span class="stars">${"★".repeat(r)}</span><span class="empty-stars">${"★".repeat(5-r)}</span>`;
+  }
+
+  function updateStats(list) {
+    statCount.textContent = list.length;
+
+    if (!list.length) {
+      statAverage.textContent = "0.0 / 5";
+      return;
+    }
+
+    const avg = list.reduce((a, b) => a + Number(b.rating || 0), 0) / list.length;
+    statAverage.textContent = avg.toFixed(1) + " / 5";
+  }
+
+  function applyFilters() {
+    let filtered = [...fullData];
+
+    const term = searchInput.value.toLowerCase();
+    if (term) {
+      filtered = filtered.filter(f =>
+        (f.username || "").toLowerCase().includes(term) ||
+        (f.userId || "").toLowerCase().includes(term) ||
+        (f.comment || "").toLowerCase().includes(term)
+      );
+    }
+
+    const sort = sortSelect.value;
+    filtered.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+
+      if (sort === "newest") return dateB - dateA;
+      if (sort === "oldest") return dateA - dateB;
+      if (sort === "highest") return (b.rating || 0) - (a.rating || 0);
+
+      return 0;
+    });
+
+    updateStats(filtered);
+    renderTable(filtered);
+  }
+
+  function renderTable(list) {
+    tbody.innerHTML = "";
+
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No feedback found.</td></tr>`;
+      return;
+    }
+
+    list.forEach(fb => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="username">${fb.username}</span><br><span class="timestamp">ID: ${fb.userId}</span></td>
+        <td class="rating">${createStars(fb.rating)} ${fb.rating}/5</td>
+        <td>${fb.comment || ""}</td>
+        <td class="timestamp">${new Date(fb.createdAt).toLocaleString()}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function loadData() {
+    const res = await fetch("/api/feedback-logs");
+    fullData = await res.json();
+    applyFilters();
+  }
+
+  searchInput.addEventListener("input", applyFilters);
+  sortSelect.addEventListener("change", applyFilters);
+
+  loadData();
+  setInterval(loadData, 5000);
+</script>
+
+</body>
+</html>
