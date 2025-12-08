@@ -1,0 +1,25 @@
+{
+  "feedback": [
+    {
+      "userId": "1186018029138624685",
+      "username": "1kordelas93",
+      "rating": 5,
+      "comment": "ewqeqeq",
+      "createdAt": "2025-12-08T19:55:58.411Z",
+      "messageId": "1447678111243304971",
+      "channelId": "1368986755663138826"
+    },
+    {
+      "userId": "1186018029138624685",
+      "username": "1kordelas93",
+      "rating": 4,
+      "comment": "1231231",
+      "createdAt": "2025-12-08T19:57:00.363Z",
+      "messageId": "1447678372330078310",
+      "channelId": "1368986755663138826"
+    }
+  ],
+  "allowances": {
+    "1186018029138624685": 0
+  }
+}
